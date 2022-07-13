@@ -68,6 +68,41 @@ public class App {
         return -1;
     }
 
+    public static int cekKodeKhsRetake(String kodeKhsDetail, String studentID, ArrayList<Mahasiswa> mahasiswa) {
+        int idx = getIndexFromMahasiswa(mahasiswa, studentID);
+        for (Khs khs : mahasiswa.get(idx).getKHS()) {
+            for (KhsDetail khsdetail : khs.getKhsDetails()) {
+                if (khsdetail.kodeKHSDetail.equals(kodeKhsDetail)) return 1;
+            }
+        }
+        return 2;
+    }
+
+    public static int getKodeKhsRetake(String kodeKhsDetail, String studentID, ArrayList<Mahasiswa> mahasiswa) {
+        int idx = getIndexFromMahasiswa(mahasiswa, studentID);
+        int index = 0;
+        for (Khs khs : mahasiswa.get(idx).getKHS()) {
+            for (KhsDetail khsdetail : khs.getKhsDetails()) {
+                if (khsdetail.kodeKHSDetail.equals(kodeKhsDetail)) return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    public static int getKodeKhsDetailretake(String kodeKhsDetail, String studentID, ArrayList<Mahasiswa> mahasiswa) {
+        int idx = getIndexFromMahasiswa(mahasiswa, studentID);
+        int Idx = getKodeKhsRetake(kodeKhsDetail, studentID, mahasiswa);
+        int Index = 0;
+        for (KhsDetail khsdetail : mahasiswa.get(idx).getKHS().get(Idx).getKhsDetails()) {
+            if (khsdetail.getKodeKHSDetail().equals(kodeKhsDetail)) {
+                return Index;
+            }
+            Index++;
+        }
+        return -1;
+    }
+
     public static ArrayList<Mahasiswa> initMahasiswa(ArrayList<Mahasiswa> mahasiswa){
         Mahasiswa mhs1 = new Mahasiswa("00001", "Marcello Stevin Halim", "Sistem Informasi", 2020);
         mahasiswa.add(mhs1);
@@ -353,6 +388,19 @@ public class App {
         }
     }
 
+    // public static int cekKodeDetailKhs(String kodeDetailKhs, String studentID, ArrayList<Mahasiswa> mahasiswa) {
+    //     int Idx = getIndexFromMahasiswa(mahasiswa, studentID);
+    //     int idx = getKodeKhsRetake(kodeDetailKhs, studentID, mahasiswa);
+    //     for (int i = 0; i < idx; i++) {
+    //         for (Khs khs : mahasiswa.get(Idx).getKHS().get(i)) {
+    //             for (KhsDetail khsdetail : khs.getKhsDetails()) {
+    //                 if (khsdetail.kodeKHSDetail.equals(kodeDetailKhs)) return 1;
+    //             }
+    //         }
+    //     }
+    //     return 2;
+    // }
+
     public static void main(String[] args) throws Exception {
         ArrayList<Term> term = new ArrayList<Term>();
         ArrayList<Matakuliah> mataKuliah = new ArrayList<Matakuliah>();
@@ -379,8 +427,8 @@ public class App {
             System.out.println(" 5. Input/Cetak Data KHS (Overall)");
             System.out.println(" 6. Input/Cetak Data Detail KHS (MatKul)");
             System.out.println(" 7. Cetak Mata Kuliah Retake");
-            System.out.println(" 8. Cetak IPK (sementara) Mahasiswa");
-            System.out.println(" 9. Cetak Transkrip (sementara) Mahasiswa");
+            System.out.println(" 8. Cetak IP Mahasiswa");
+            System.out.println(" 9. Cetak Transkrip (Sementara) Mahasiswa");
             System.out.println("10. Cetak Transkrip Pembayaran (Mahasiswa)");
             System.out.println("11. Keluar");
             System.out.print("Pilihan Anda [1/2/3/4/5/6/7/8/9/10/11] ? ");
@@ -933,7 +981,7 @@ public class App {
                                         String kodeTerm = keyboard.next();
                                         int idx = getIndexFromTerm(term, kodeTerm);
                                         if (idx == -1) {
-                                            System.out.println("Kode term yang Anda masukkan invalid..");
+                                            System.out.println("\nKode term yang Anda masukkan invalid..");
                                         }
                                         else {
                                             try{
@@ -959,7 +1007,7 @@ public class App {
                                     }
                                 }
                                 else {
-                                    throw new Exception("Kode KHS harus berupa 6 digit!");
+                                    throw new Exception("\nKode KHS harus berupa 6 digit!");
                                 }                                     
                             } catch (Exception e) {
                                 System.out.println(e.getMessage());
@@ -1000,12 +1048,12 @@ public class App {
                             idx++;
                         }
                         if(temu == false){
-                            System.out.println("Kode KHS yang Anda masukkan invalid..");
+                            System.out.println("\nKode KHS yang Anda masukkan invalid..");
                         }
                     }
                 }
                 else {
-                    System.out.println("Pilihan tidak tersedia..");
+                    System.out.println("\nPilihan tidak tersedia..");
                 }
             }
 
@@ -1087,81 +1135,95 @@ public class App {
                                                                             try {                                                
                                                                                 int nilai = keyboard.nextInt();
                                                                                 Mahasiswa mhs = mahasiswa.get(index);
-                                                                                mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
-                                                                                if (nilai < 60) {
-                                                                                    System.out.print("\nTekan y untuk retake matakuliah ini: ");
-                                                                                    String jwb = keyboard.next();
-                                                                                    if(jwb.equalsIgnoreCase("y")) {
-                                                                                        while (true) {
-                                                                                            clearScreen();
-                                                                                            System.out.println("Retake Mata Kuliah");
-                                                                                            System.out.println("------------------");
-                                                                                            System.out.print("Masukkan term untuk melakukan retake (Kode Term) : ");
-                                                                                            try {
-                                                                                                String kodeTerm = keyboard.next();
-                                                                                                int idx = getIndexFromTerm(term, kodeTerm);
-                                                                                                if (idx == -1) {
-                                                                                                    throw new Exception("\nKode term yang Anda masukkan invalid..");
-                                                                                                }
-                                                                                                else {
-                                                                                                    int Idx = getIndexFromKhs(studentID, kodeKHS, mahasiswa);
-                                                                                                    if (validasiTermRetake(mahasiswa.get(index).getKHS().get(Idx).getTerm().getKodeTerm(), kodeTerm, term) == 1){
-                                                                                                        throw new Exception("\nRetake tidak dapat dilakukan pada term sebelum dan term saat ini..");
+                                                                                if (nilai >= 0 && nilai <= 100) {
+                                                                                    //mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
+                                                                                    if (nilai < 60 && nilai >= 0) {
+                                                                                        System.out.print("\nTekan y untuk retake matakuliah ini: ");
+                                                                                        String jwb = keyboard.next();
+                                                                                        if(jwb.equalsIgnoreCase("y")) {
+                                                                                            while (true) {
+                                                                                                clearScreen();
+                                                                                                System.out.println("Retake Mata Kuliah");
+                                                                                                System.out.println("------------------");
+                                                                                                System.out.print("Masukkan term untuk melakukan retake (Kode Term) : ");
+                                                                                                try {
+                                                                                                    String kodeTerm = keyboard.next();
+                                                                                                    int idx = getIndexFromTerm(term, kodeTerm);
+                                                                                                    if (idx == -1) {
+                                                                                                        throw new Exception("\nKode term yang Anda masukkan invalid..");
                                                                                                     }
                                                                                                     else {
-                                                                                                        clearScreen();
-                                                                                                        String kodeKrs = getKrsDariTerm(studentID, kodeTerm, mahasiswa);
-                                                                                                        if (kodeKrs.equals("")) {
-                                                                                                            while (true) {
-                                                                                                                try {
-                                                                                                                    clearScreen();
-                                                                                                                    System.out.println("Retake Mata Kuliah");
-                                                                                                                    System.out.println("------------------");
-                                                                                                                    System.out.println("Masukkan term untuk melakukan retake (Kode Term) : " + kodeTerm);
-                                                                                                                    System.out.print("Masukkan kode Krs baru                           : ");
-                                                                                                                    String kodeKrsBaru = keyboard.next();
-                                                                                                                    if (validasiKodeKrs(kodeKrsBaru, studentID, mahasiswa) == 1) {
-                                                                                                                        throw new Exception("\nKode Krs telah terdaftar..");
-                                                                                                                    }
-                                                                                                                    else if (validasiKodeKrs(kodeKrsBaru, studentID, mahasiswa) == 2) {
-                                                                                                                        mhs.getKRS().add(new Krs(kodeKrsBaru, term.get(idx)));
-                                                                                                                        int indexKrs = getIndexKrs(kodeKrsBaru, studentID, mahasiswa);
-                                                                                                                        mhs.getKRS().get(indexKrs).getDaftarMataKuliah().add(new Matakuliah("R" + mataKuliah.get(IDX).getKodeMataKuliah(), mataKuliah.get(IDX).getNamaMataKuliah() + " (Retake)", mataKuliah.get(IDX).getSks()));
-                                                                                                                        mhs.getKHS().get(Index).retake.add(new Retake("R"+ kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, term.get(idx))); 
-                                                                                                                        break;
-                                                                                                                    }
-                                                                                                                    else {
-                                                                                                                        throw new Exception("\nKode KRS harus berupa 6 digit!");
-                                                                                                                    }
-                                                                                                                } catch (Exception e) {
-                                                                                                                    System.out.println(e.getMessage()); 
-                                                                                                                    sleep(2000);                                                                                                               
-                                                                                                                    continue;
-                                                                                                                }
-                                                                                                            }
+                                                                                                        int Idx = getIndexFromKhs(studentID, kodeKHS, mahasiswa);
+                                                                                                        if (validasiTermRetake(mahasiswa.get(index).getKHS().get(Idx).getTerm().getKodeTerm(), kodeTerm, term) == 1){
+                                                                                                            throw new Exception("\nRetake tidak dapat dilakukan pada term sebelum dan term saat ini..");
                                                                                                         }
                                                                                                         else {
-                                                                                                            int indexKrs = getIndexKrs(kodeKrs, studentID, mahasiswa);
-                                                                                                            mhs.getKRS().get(indexKrs).getDaftarMataKuliah().add(new Matakuliah("R" + mataKuliah.get(IDX).getKodeMataKuliah(), mataKuliah.get(IDX).getNamaMataKuliah() + " (Retake)", mataKuliah.get(IDX).getSks()));
+                                                                                                            clearScreen();
+                                                                                                            String kodeKrs = getKrsDariTerm(studentID, kodeTerm, mahasiswa);
+                                                                                                            if (kodeKrs.equals("")) {
+                                                                                                                while (true) {
+                                                                                                                    try {
+                                                                                                                        clearScreen();
+                                                                                                                        System.out.println("Retake Mata Kuliah");
+                                                                                                                        System.out.println("------------------");
+                                                                                                                        System.out.println("Masukkan term untuk melakukan retake (Kode Term) : " + kodeTerm);
+                                                                                                                        System.out.print("Masukkan kode Krs baru                           : ");
+                                                                                                                        String kodeKrsBaru = keyboard.next();
+                                                                                                                        if (validasiKodeKrs(kodeKrsBaru, studentID, mahasiswa) == 1) {
+                                                                                                                            throw new Exception("\nKode Krs telah terdaftar..");
+                                                                                                                        }
+                                                                                                                        else if (validasiKodeKrs(kodeKrsBaru, studentID, mahasiswa) == 2) {
+                                                                                                                            mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
+                                                                                                                            mhs.getKRS().add(new Krs(kodeKrsBaru, term.get(idx)));
+                                                                                                                            int indexKrs = getIndexKrs(kodeKrsBaru, studentID, mahasiswa);
+                                                                                                                            mhs.getKRS().get(indexKrs).getDaftarMataKuliah().add(new Matakuliah(mataKuliah.get(IDX).getKodeMataKuliah(), mataKuliah.get(IDX).getNamaMataKuliah() + " (Retake)", mataKuliah.get(IDX).getSks()));
+                                                                                                                            mhs.getKHS().get(Index).retake.add(new Retake(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, term.get(idx))); 
+                                                                                                                            break;
+                                                                                                                        }
+                                                                                                                        else {
+                                                                                                                            throw new Exception("\nKode KRS harus berupa 6 digit!");
+                                                                                                                        }
+                                                                                                                    } catch (Exception e) {
+                                                                                                                        System.out.println(e.getMessage()); 
+                                                                                                                        sleep(2000);                                                                                                               
+                                                                                                                        continue;
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                            else {
+                                                                                                                int indexKrs = getIndexKrs(kodeKrs, studentID, mahasiswa);
+                                                                                                                mhs.getKRS().get(indexKrs).getDaftarMataKuliah().add(new Matakuliah(mataKuliah.get(IDX).getKodeMataKuliah(), mataKuliah.get(IDX).getNamaMataKuliah() + " (Retake)", mataKuliah.get(IDX).getSks()));
+                                                                                                            }
+                                                                                                            System.out.println("\nMatakuliah akan di-retake pada term yang telah ditentukan");
+                                                                                                            break;
                                                                                                         }
-                                                                                                        System.out.println("\nMatakuliah akan di-retake pada term yang telah ditentukan");
-                                                                                                        break;
-                                                                                                    }
-                                                                                                }                                                                                               
-                                                                                            } catch (Exception e) {
-                                                                                                System.out.println(e.getMessage());
-                                                                                                sleep(2000);
-                                                                                                continue;
+                                                                                                    }                                                                                               
+                                                                                                } catch (Exception e) {
+                                                                                                    System.out.println(e.getMessage());
+                                                                                                    sleep(2000);
+                                                                                                    continue;
+                                                                                                }
                                                                                             }
+                                                                                        }
+                                                                                        else {
+                                                                                            mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
+                                                                                            System.out.println("\nMatakuliah ini tidak akan di-retake");
                                                                                         }
                                                                                     }
                                                                                     else {
-                                                                                        System.out.println("\nMatakuliah ini tidak di-retake");
+                                                                                        if (cekKodeKhsRetake(kodeDetailKHS, studentID, mahasiswa) == 1) {
+                                                                                            int idx = getKodeKhsRetake(kodeDetailKHS, studentID, mahasiswa);
+                                                                                            mhs.khs.get(idx).retake.add(new Retake(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, mahasiswa.get(index).getKHS().get(idx).getTerm())); //salah
+                                                                                        }
+                                                                                        mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
                                                                                     }
+                                                                                    check2 = true;
+                                                                                    check3 = true;
+                                                                                    break;
                                                                                 }
-                                                                                check2 = true;
-                                                                                check3 = true;
-                                                                                break;
+                                                                                else {
+                                                                                    throw new Exception("\nNilai harus berupa angka [1-100]!");
+                                                                                }
                                                                             } catch (InputMismatchException e) {
                                                                                 System.out.println("\nNilai harus berupa angka!");
                                                                                 keyboard.nextLine();
@@ -1182,10 +1244,12 @@ public class App {
                                                                     }
                                                                 }
                                                                 else {
-                                                                    System.out.println("\nKode mata kuliah yang Anda masukkan invalid..");
+                                                                    if (matKul.length() == 5) {
+                                                                        System.out.println("\nKode Mata Kuliah yang Anda masukkan invalid..");
+                                                                    }
+                                                                    else System.out.println("\nKode Mata Kuliah harus berupa 5 digit!");
                                                                     sleep(2000);
-                                                                }
-                                                                
+                                                                }    
                                                             } catch (Exception e) {
                                                                 System.out.println(e.getMessage());
                                                                 sleep(2000);
@@ -1317,7 +1381,7 @@ public class App {
                     System.out.println("----------------------------------------------------------------");
                     System.out.println("\t\t     Data Mata Kuliah Retake");
                     System.out.println("----------------------------------------------------------------");
-                    System.out.printf("%-20s %-25s %-4s\n", "Kode MatKul", "Nama MatKul", "Sks");
+                    System.out.printf("%-20s %-30s %-4s\n", "Kode MatKul", "Nama MatKul", "Sks");
                     System.out.println("----------------------------------------------------------------");
                     int jumlahRetake = 0;
                     for (Khs khs : mahasiswa.get(index).getKHS()) {
@@ -1334,24 +1398,67 @@ public class App {
             }
             
             else if (pilihan.equals("8")) {
-                System.out.println("IPK Sementara Mahasiswa");
-                System.out.println("-----------------------");
-                System.out.print("Masukkan studentID : ");
-                String studentID = keyboard.next();
-                int idx = getIndexFromMahasiswa(mahasiswa, studentID);
-                if (idx == -1) {
-                    System.out.println("\nStudentID yang Anda masukkan invalid..");
+                System.out.println("Cetak IP Mahasiswa");
+                System.out.println("------------------");
+                System.out.println("1. IP Mahasiswa per Semester");
+                System.out.println("2. IPK Sementara Mahasiswa");
+                System.out.print("Pilihan Anda [1/2] ? ");
+                String opsi = keyboard.next();
+
+                clearScreen();
+                if(opsi=="1"){
+                    System.out.println("IP Mahasiswa per Semester");
+                    System.out.println("--------------------------");
+                    System.out.print("Masukkan studentID : ");
+                    String studentID = keyboard.next();
+                    int index = getIndexFromMahasiswa(mahasiswa, studentID);
+                    if (index == -1) {
+                        System.out.print("StudentID yang Anda masukkan invalid..");
+                    }
+                    else {
+                        System.out.print("Masukkan kode term : ");
+                        String kodeTerm = keyboard.next();
+                        int idx = getIndexFromTerm(term, kodeTerm);
+                        if (idx == -1) {
+                            System.out.println("Kode term yang Anda masukkan invalid..");
+                        }
+                        else {
+                            clearScreen();
+                        System.out.println("----------------------------------------------------------------");
+                        System.out.println("\t\t  IPK Mahasiswa per Semester");
+                        System.out.println("----------------------------------------------------------------");
+                        System.out.println("Nama          : " +  mahasiswa.get(index).getNama());
+                        System.out.println("Student ID    : " +  mahasiswa.get(index).getStudentID());
+                        System.out.println("Jurusan       : " +  mahasiswa.get(index).getJurusan()); 
+                        System.out.println("Term          : " +  term.get(idx).getSemester());
+                        System.out.println("IP Semester   : " +  String.format("%.2f",mahasiswa.get(index).getIPKTerm(term.get(idx))));
+                        System.out.println("----------------------------------------------------------------");
+                        }
+                    }
                 }
-                else {
-                    clearScreen();
-                    System.out.println("----------------------------------------------------------------");
-                    System.out.println("\t\t  IPK Sementara Mahasiswa");
-                    System.out.println("----------------------------------------------------------------");
-                    System.out.println("Nama          : " +  mahasiswa.get(idx).getNama());
-                    System.out.println("Student ID    : " +  mahasiswa.get(idx).getStudentID());
-                    System.out.println("Jurusan       : " +  mahasiswa.get(idx).getJurusan()); 
-                    System.out.println("IPK sementara : " +  String.format("%.2f",mahasiswa.get(idx).getIPK()));
-                    System.out.println("----------------------------------------------------------------");
+                else if(opsi == "2"){
+                    System.out.println("IPK Sementara Mahasiswa");
+                    System.out.println("-----------------------");
+                    System.out.print("Masukkan studentID : ");
+                    String studentID = keyboard.next();
+                    int idx = getIndexFromMahasiswa(mahasiswa, studentID);
+                    if (idx == -1) {
+                        System.out.println("\nStudentID yang Anda masukkan invalid..");
+                    }
+                    else {
+                        clearScreen();
+                        System.out.println("----------------------------------------------------------------");
+                        System.out.println("\t\t  IPK Sementara Mahasiswa");
+                        System.out.println("----------------------------------------------------------------");
+                        System.out.println("Nama          : " +  mahasiswa.get(idx).getNama());
+                        System.out.println("Student ID    : " +  mahasiswa.get(idx).getStudentID());
+                        System.out.println("Jurusan       : " +  mahasiswa.get(idx).getJurusan()); 
+                        System.out.println("IPK Sementara : " +  String.format("%.2f",mahasiswa.get(idx).getIPK()));
+                        System.out.println("----------------------------------------------------------------");
+                    }
+                }
+                else{
+                    System.out.println("\nPilihan tidak tersedia..");
                 }
             }
 
@@ -1366,31 +1473,33 @@ public class App {
                 }
                 else {
                     clearScreen();
-                    System.out.println("----------------------------------------------------------------------");
+                    System.out.println("-------------------------------------------------------------------------");
                     System.out.println("\t\t\tTranskrip Nilai Mahasiswa");
-                    System.out.println("----------------------------------------------------------------------");
+                    System.out.println("-------------------------------------------------------------------------");
                     System.out.println("Nama        : " +  mahasiswa.get(idx).getNama());
                     System.out.println("Student ID  : " +  mahasiswa.get(idx).getStudentID());
                     System.out.println("Jurusan     : " +  mahasiswa.get(idx).getJurusan());
-                    System.out.println("----------------------------------------------------------------------");
+                    System.out.println("-------------------------------------------------------------------------");
                     
                     if (mahasiswa.get(idx).khs.size() == 0) {
                         System.out.println("\nData tidak ditemukan..");
                     }
                     else {
-                        System.out.printf("%-13s %-20s %-6s %-7s %-7s\n", "Kode MatKul", "Nama MatKul","Sks","Nilai","Angka Kualitas");
-                        System.out.println("----------------------------------------------------------------------");
+                        System.out.printf("%-5s %-13s %-20s %-6s %-7s %-7s %-7s\n", "Semester", "Kode MatKul", "Nama MatKul","Sks","Nilai Huruf", "Nilai Angka","Angka Kualitas");
+                        System.out.println("-------------------------------------------------------------------------");
                         for (Khs khs : mahasiswa.get(idx).khs) {
+                            String semester = khs.getDetailTerm().getSemester();
                             for (KhsDetail khsDetail : khs.getKhsDetails()) {
                                 String kode = khsDetail.getDetailMatakuliah().getKodeMataKuliah();
                                 String nama = khsDetail.getDetailMatakuliah().getNamaMataKuliah();
                                 int sks = khsDetail.getDetailMatakuliah().getSks();
                                 String huruf = khsDetail.konversiNilaiHuruf();
+                                int nilai = khsDetail.getNilai();
                                 float angka = khsDetail.getDetailMatakuliah().getSks() *khsDetail.konversiNilai();
-                                System.out.printf("%-13s %-20s %-6d %-7s %-7.2f\n", kode, nama, sks, huruf, angka);
+                                System.out.printf("%-5s %-13s %-20s %-6d %-7s %-7d %-7.2f\n", semester, kode, nama, sks, huruf, nilai, angka);
                             }
                         }
-                        System.out.println("----------------------------------------------------------------------\n");
+                        System.out.println("-------------------------------------------------------------------------\n");
                     }
                 }
             }

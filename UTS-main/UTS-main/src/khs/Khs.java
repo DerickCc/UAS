@@ -77,7 +77,17 @@ public class Khs {
         System.out.printf("%-20s %-30s %-5s\n", "Kode Detail Khs", "Nama MatKul","Nilai");
         System.out.println("---------------------------------------------------------------------------");
         for (KhsDetail khsDetail : khsDetails) {
-            khsDetail.tampilkanDetailKHS();
+            int cek = 0;
+            for(Retake r : retake){
+                if(khsDetail.getDetailMatakuliah().getKodeMataKuliah().equals(r.getDetailMatakuliah().getKodeMataKuliah())){
+                    khsDetail.tampilkanDetailKHSRetake();
+                    cek++;
+                    break;
+                }
+            }
+            if(cek == 0){
+                khsDetail.tampilkanDetailKHS();
+            }   
         }
         System.out.println("---------------------------------------------------------------------------");
     }
@@ -90,8 +100,27 @@ public class Khs {
         float sumNilai = 0.0f;
         float sumSKS = 0.0f;
         for (KhsDetail i : khsDetails) {
-            sumNilai+=i.konversiNilai()*i.getDetailMatakuliah().getSks();
+            float nilaiRetake = 0.0f; 
+            int cek = 0;  
+            if(retake.size()>0){
+                for(Retake r : retake){
+                    if(i.getDetailMatakuliah().getKodeMataKuliah().equals(r.getDetailMatakuliah().getKodeMataKuliah())){
+                        nilaiRetake += r.konversiNilai();
+                        cek++;
+                        break;
+                    }
+                }
+            }
+            if(cek==1){
+                sumNilai+=nilaiRetake*i.getDetailMatakuliah().getSks();
+            }
+            else {
+                sumNilai+=i.konversiNilai()*i.getDetailMatakuliah().getSks();
+            }
             sumSKS += i.getDetailMatakuliah().getSks();
+        }
+        if(sumNilai==0.0f){
+            return 0;
         }
         return sumNilai/sumSKS;
     }

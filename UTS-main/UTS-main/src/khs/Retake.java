@@ -13,6 +13,6 @@ public class Retake extends KhsDetail {
     }
 
     public void tampilkanMataKuliahRetake() {
-        System.out.printf("%-20s %-25s %-5d\n", getDetailMatakuliah().getKodeMataKuliah(), getDetailMatakuliah().getNamaMataKuliah(), getDetailMatakuliah().getSks());
+        System.out.printf("%-20s %-30s %-5d\n", getDetailMatakuliah().getKodeMataKuliah(), getDetailMatakuliah().getNamaMataKuliah() + " (Retake)", getDetailMatakuliah().getSks());
     }   
 }
