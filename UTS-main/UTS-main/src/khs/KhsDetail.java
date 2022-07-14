@@ -102,7 +102,4 @@ public class KhsDetail {
         System.out.printf("%-20s %-30s %-5d\n", kodeKHSDetail, mataKuliah.getNamaMataKuliah(), nilai);
     } 
     
-    public void tampilkanDetailKHSRetake() {
-        System.out.printf("%-20s %-30s %-5d\n", kodeKHSDetail, mataKuliah.getNamaMataKuliah() + " (Retake)", nilai);
-    } 
 }

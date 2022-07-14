@@ -388,18 +388,21 @@ public class App {
         }
     }
 
-    // public static int cekKodeDetailKhs(String kodeDetailKhs, String studentID, ArrayList<Mahasiswa> mahasiswa) {
-    //     int Idx = getIndexFromMahasiswa(mahasiswa, studentID);
-    //     int idx = getKodeKhsRetake(kodeDetailKhs, studentID, mahasiswa);
-    //     for (int i = 0; i < idx; i++) {
-    //         for (Khs khs : mahasiswa.get(Idx).getKHS().get(i)) {
-    //             for (KhsDetail khsdetail : khs.getKhsDetails()) {
-    //                 if (khsdetail.kodeKHSDetail.equals(kodeDetailKhs)) return 1;
-    //             }
-    //         }
-    //     }
-    //     return 2;
-    // }
+    public static int cekKodeDetailKhs(int index, String kodeDetailKhs, String studentID, ArrayList<Mahasiswa> mahasiswa) {
+        int Idx = getIndexFromMahasiswa(mahasiswa, studentID);
+        int idx = getKodeKhsRetake(kodeDetailKhs, studentID, mahasiswa);
+        int cek = 0;
+        int count = 0;
+        for (Khs khs : mahasiswa.get(Idx).getKHS()) {
+            for (KhsDetail khsdetail : khs.getKhsDetails()) {
+                if (khsdetail.kodeKHSDetail.equals(kodeDetailKhs)) count++;
+            }
+            cek++;
+            if (cek == idx) break;
+        }
+        if (count > 1) return 1;
+        else return 2;
+    }
 
     public static void main(String[] args) throws Exception {
         ArrayList<Term> term = new ArrayList<Term>();
@@ -1193,6 +1196,7 @@ public class App {
                                                                                                             else {
                                                                                                                 int indexKrs = getIndexKrs(kodeKrs, studentID, mahasiswa);
                                                                                                                 mhs.getKRS().get(indexKrs).getDaftarMataKuliah().add(new Matakuliah(mataKuliah.get(IDX).getKodeMataKuliah(), mataKuliah.get(IDX).getNamaMataKuliah() + " (Retake)", mataKuliah.get(IDX).getSks()));
+                                                                                                                mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
                                                                                                             }
                                                                                                             System.out.println("\nMatakuliah akan di-retake pada term yang telah ditentukan");
                                                                                                             break;
@@ -1406,7 +1410,7 @@ public class App {
                 String opsi = keyboard.next();
 
                 clearScreen();
-                if(opsi=="1"){
+                if(opsi.equals("1")){
                     System.out.println("IP Mahasiswa per Semester");
                     System.out.println("--------------------------");
                     System.out.print("Masukkan studentID : ");
@@ -1436,7 +1440,7 @@ public class App {
                         }
                     }
                 }
-                else if(opsi == "2"){
+                else if(opsi.equals("2")){
                     System.out.println("IPK Sementara Mahasiswa");
                     System.out.println("-----------------------");
                     System.out.print("Masukkan studentID : ");
@@ -1473,20 +1477,20 @@ public class App {
                 }
                 else {
                     clearScreen();
-                    System.out.println("-------------------------------------------------------------------------");
-                    System.out.println("\t\t\tTranskrip Nilai Mahasiswa");
-                    System.out.println("-------------------------------------------------------------------------");
+                    System.out.println("------------------------------------------------------------------------------------------------");
+                    System.out.println("\t\t\t\tTranskrip Nilai Mahasiswa");
+                    System.out.println("------------------------------------------------------------------------------------------------");
                     System.out.println("Nama        : " +  mahasiswa.get(idx).getNama());
                     System.out.println("Student ID  : " +  mahasiswa.get(idx).getStudentID());
                     System.out.println("Jurusan     : " +  mahasiswa.get(idx).getJurusan());
-                    System.out.println("-------------------------------------------------------------------------");
+                    System.out.println("------------------------------------------------------------------------------------------------");
                     
                     if (mahasiswa.get(idx).khs.size() == 0) {
                         System.out.println("\nData tidak ditemukan..");
                     }
                     else {
-                        System.out.printf("%-5s %-13s %-20s %-6s %-7s %-7s %-7s\n", "Semester", "Kode MatKul", "Nama MatKul","Sks","Nilai Huruf", "Nilai Angka","Angka Kualitas");
-                        System.out.println("-------------------------------------------------------------------------");
+                        System.out.printf("%-8s  %-13s %-25s %-6s %-12s %-12s %-7s\n", "Semester", "Kode MatKul", "Nama MatKul","Sks","Nilai Huruf", "Nilai Angka","Angka Kualitas");
+                        System.out.println("------------------------------------------------------------------------------------------------");
                         for (Khs khs : mahasiswa.get(idx).khs) {
                             String semester = khs.getDetailTerm().getSemester();
                             for (KhsDetail khsDetail : khs.getKhsDetails()) {
@@ -1496,10 +1500,14 @@ public class App {
                                 String huruf = khsDetail.konversiNilaiHuruf();
                                 int nilai = khsDetail.getNilai();
                                 float angka = khsDetail.getDetailMatakuliah().getSks() *khsDetail.konversiNilai();
-                                System.out.printf("%-5s %-13s %-20s %-6d %-7s %-7d %-7.2f\n", semester, kode, nama, sks, huruf, nilai, angka);
+                                // if (cekKodeDetailKhs(khsDetail.getKodeKHSDetail(), studentID, mahasiswa) == 1) {
+                                //     nama = khsDetail.getDetailMatakuliah().getNamaMataKuliah() + " (Retake)";
+                                // }
+                                //System.out.printf("%-8s %-13s %-20s %-6d %-7s %-7d %-7.2f\n", semester, kode, nama, sks, huruf, nilai, angka);
+                                System.out.printf("%-8s  %-13s %-25s %-6d %-12s %-12d %-7.2f\n", semester, kode, nama, sks, huruf, nilai, angka);
                             }
                         }
-                        System.out.println("-------------------------------------------------------------------------\n");
+                        System.out.println("------------------------------------------------------------------------------------------------\n");
                     }
                 }
             }

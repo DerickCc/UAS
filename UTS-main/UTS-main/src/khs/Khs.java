@@ -77,17 +77,7 @@ public class Khs {
         System.out.printf("%-20s %-30s %-5s\n", "Kode Detail Khs", "Nama MatKul","Nilai");
         System.out.println("---------------------------------------------------------------------------");
         for (KhsDetail khsDetail : khsDetails) {
-            int cek = 0;
-            for(Retake r : retake){
-                if(khsDetail.getDetailMatakuliah().getKodeMataKuliah().equals(r.getDetailMatakuliah().getKodeMataKuliah())){
-                    khsDetail.tampilkanDetailKHSRetake();
-                    cek++;
-                    break;
-                }
-            }
-            if(cek == 0){
-                khsDetail.tampilkanDetailKHS();
-            }   
+                khsDetail.tampilkanDetailKHS();  
         }
         System.out.println("---------------------------------------------------------------------------");
     }
