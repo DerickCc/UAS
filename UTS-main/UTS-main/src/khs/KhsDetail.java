@@ -3,13 +3,23 @@ package khs;
 public class KhsDetail {
     public String kodeKHSDetail, kodeKHS;
     private Matakuliah mataKuliah;
+    private String stringRetake = "";
     private int nilai = 0;
 
-    public KhsDetail(String kodeKHSDetail, String kodeKHS, Matakuliah mataKuliah, int nilai) {
+    public KhsDetail(String kodeKHSDetail, String kodeKHS, Matakuliah mataKuliah, int nilai, String stringRetake){
         this.kodeKHSDetail = kodeKHSDetail;
         this.kodeKHS = kodeKHS;
         this.mataKuliah = mataKuliah;
         this.nilai = nilai;
+        this.stringRetake = stringRetake;
+    }
+
+    public String getStringRetake(){
+        return this.stringRetake;
+    }
+
+    public void setStringRetake(String stringRetake){
+        this.stringRetake = stringRetake;
     }
 
     public String getKodeKHSDetail() {
@@ -102,4 +112,7 @@ public class KhsDetail {
         System.out.printf("%-20s %-30s %-5d\n", kodeKHSDetail, mataKuliah.getNamaMataKuliah(), nilai);
     } 
     
+    public void tampilkanDetailKHSRetake() {
+        System.out.printf("%-20s %-30s %-5d\n", kodeKHSDetail, mataKuliah.getNamaMataKuliah() + " (Retake)", nilai);
+    } 
 }

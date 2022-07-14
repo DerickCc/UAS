@@ -7,6 +7,7 @@ public class Mahasiswa implements Pembayaran{
     private int tahunMasuk;
     public ArrayList<Khs> khs = new ArrayList<Khs>();
     public ArrayList<Krs> krs = new ArrayList<Krs>();
+    public ArrayList<Retake> retake = new ArrayList<Retake>();
 
     public Mahasiswa(String studentID, String nama, String jurusan, int tahunMasuk) {
         this.studentID = studentID;
@@ -61,6 +62,10 @@ public class Mahasiswa implements Pembayaran{
 
     public void setKRS(ArrayList<Krs> krs) {
         this.krs = krs;
+    }
+
+    public ArrayList<Retake> getRetake(){
+        return this.retake;
     }
 
     public Khs getKhs(Term term){

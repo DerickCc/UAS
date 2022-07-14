@@ -68,11 +68,11 @@ public class App {
         return -1;
     }
 
-    public static int cekKodeKhsRetake(String kodeKhsDetail, String studentID, ArrayList<Mahasiswa> mahasiswa) {
+    public static int cekMatkulRetake(String kodeMatkul, String studentID, ArrayList<Mahasiswa> mahasiswa) {
         int idx = getIndexFromMahasiswa(mahasiswa, studentID);
         for (Khs khs : mahasiswa.get(idx).getKHS()) {
             for (KhsDetail khsdetail : khs.getKhsDetails()) {
-                if (khsdetail.kodeKHSDetail.equals(kodeKhsDetail)) return 1;
+                if (khsdetail.getDetailMatakuliah().getKodeMataKuliah().equals(kodeMatkul)) return 1;
             }
         }
         return 2;
@@ -119,8 +119,11 @@ public class App {
         Term term2 = new Term("02_term", 2022, "2", "Periode 2021/2022", "Semester Genap");
         term.add(term2);
         Term term3 = new Term("03_term", 2022, "3", "Periode 2021/2022", "Semester Akselerasi");
-        // System.out.printf("%-10s %-25s %-20s %4s\n", "03_term", "2021", "3", "Periode ****/****", "Semester Pendek");
         term.add(term3);
+        Term term4 = new Term("04_term", 2023, "4", "Periode 2022/2023", "Semester Ganjil");
+        term.add(term4);
+        Term term5 = new Term("05_term", 2023, "5", "Periode 2022/2023", "Semester Genap");
+        term.add(term5);
         return term;
     }
 
@@ -335,37 +338,37 @@ public class App {
         return 2;
     }
 
-    public static int validasiKodeMatKulRetake(String studentID, String kodeKHS, String kodeMatkul, ArrayList<Mahasiswa> mahasiswa) {
-        int index = getIndexFromMahasiswa(mahasiswa, studentID);
-        int Idx = getIndexFromKhs(studentID, kodeKHS, mahasiswa);
-        if (kodeMatkul.length() == 5) {
-            for (Retake retake : mahasiswa.get(index).getKHS().get(Idx).retake) {
-                if (retake.getDetailMatakuliah().getKodeMataKuliah().equals(kodeMatkul)) {
-                    if (retake.getNilai() < 60) {
-                        return 1;
-                    }
-                    else {
-                        return 2;
-                    }
-                }
-            }
-            return 3;
-        }
-        else return 4;
-    }
+    // public static int validasiKodeMatKulRetake(String studentID, String kodeKHS, String kodeMatkul, ArrayList<Mahasiswa> mahasiswa) {
+    //     int index = getIndexFromMahasiswa(mahasiswa, studentID);
+    //     int Idx = getIndexFromKhs(studentID, kodeKHS, mahasiswa);
+    //     if (kodeMatkul.length() == 5) {
+    //         for (Retake retake : mahasiswa.get(index).getKHS().get(Idx).retake) {
+    //             if (retake.getDetailMatakuliah().getKodeMataKuliah().equals(kodeMatkul)) {
+    //                 if (retake.getNilai() < 60) {
+    //                     return 1;
+    //                 }
+    //                 else {
+    //                     return 2;
+    //                 }
+    //             }
+    //         }
+    //         return 3;
+    //     }
+    //     else return 4;
+    // }
 
-    public static int getindexMatKulRetake(String studentID, String kodeKHS, String kodeMatkul, ArrayList<Mahasiswa> mahasiswa) {
-        int index = getIndexFromMahasiswa(mahasiswa, studentID);
-        int Idx = getIndexFromKhs(studentID, kodeKHS, mahasiswa);
-        int idx = 0;
-        for (Retake retake : mahasiswa.get(index).getKHS().get(Idx).retake) {
-            if (retake.getDetailMatakuliah().getKodeMataKuliah().equals(kodeMatkul)) {
-                return idx;
-            }
-            idx++;
-        }
-        return -1;
-    }
+    // public static int getindexMatKulRetake(String studentID, String kodeKHS, String kodeMatkul, ArrayList<Mahasiswa> mahasiswa) {
+    //     int index = getIndexFromMahasiswa(mahasiswa, studentID);
+    //     int Idx = getIndexFromKhs(studentID, kodeKHS, mahasiswa);
+    //     int idx = 0;
+    //     for (Retake retake : mahasiswa.get(index).getKHS().get(Idx).retake) {
+    //         if (retake.getDetailMatakuliah().getKodeMataKuliah().equals(kodeMatkul)) {
+    //             return idx;
+    //         }
+    //         idx++;
+    //     }
+    //     return -1;
+    // }
 
     public static String getKrsDariTerm(String studentID, String kodeTerm, ArrayList<Mahasiswa> mahasiswa) {
         int idx = getIndexFromMahasiswa(mahasiswa, studentID);
@@ -1176,11 +1179,10 @@ public class App {
                                                                                                                             throw new Exception("\nKode Krs telah terdaftar..");
                                                                                                                         }
                                                                                                                         else if (validasiKodeKrs(kodeKrsBaru, studentID, mahasiswa) == 2) {
-                                                                                                                            mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
+                                                                                                                            mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, ""));
                                                                                                                             mhs.getKRS().add(new Krs(kodeKrsBaru, term.get(idx)));
                                                                                                                             int indexKrs = getIndexKrs(kodeKrsBaru, studentID, mahasiswa);
                                                                                                                             mhs.getKRS().get(indexKrs).getDaftarMataKuliah().add(new Matakuliah(mataKuliah.get(IDX).getKodeMataKuliah(), mataKuliah.get(IDX).getNamaMataKuliah() + " (Retake)", mataKuliah.get(IDX).getSks()));
-                                                                                                                            mhs.getKHS().get(Index).retake.add(new Retake(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, term.get(idx))); 
                                                                                                                             break;
                                                                                                                         }
                                                                                                                         else {
@@ -1196,7 +1198,7 @@ public class App {
                                                                                                             else {
                                                                                                                 int indexKrs = getIndexKrs(kodeKrs, studentID, mahasiswa);
                                                                                                                 mhs.getKRS().get(indexKrs).getDaftarMataKuliah().add(new Matakuliah(mataKuliah.get(IDX).getKodeMataKuliah(), mataKuliah.get(IDX).getNamaMataKuliah() + " (Retake)", mataKuliah.get(IDX).getSks()));
-                                                                                                                mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
+                                                                                                                mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, ""));
                                                                                                             }
                                                                                                             System.out.println("\nMatakuliah akan di-retake pada term yang telah ditentukan");
                                                                                                             break;
@@ -1210,16 +1212,20 @@ public class App {
                                                                                             }
                                                                                         }
                                                                                         else {
-                                                                                            mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
+                                                                                            mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, ""));
                                                                                             System.out.println("\nMatakuliah ini tidak akan di-retake");
                                                                                         }
                                                                                     }
                                                                                     else {
-                                                                                        if (cekKodeKhsRetake(kodeDetailKHS, studentID, mahasiswa) == 1) {
+                                                                                        if (cekMatkulRetake(matKul, studentID, mahasiswa) == 1) {
                                                                                             int idx = getKodeKhsRetake(kodeDetailKHS, studentID, mahasiswa);
-                                                                                            mhs.khs.get(idx).retake.add(new Retake(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, mahasiswa.get(index).getKHS().get(idx).getTerm())); //salah
+                                                                                            mhs.retake.add(new Retake(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, mahasiswa.get(index).getKHS().get(idx).getTerm(), "")); //salah
+                                                                                            mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, "Retake"));
                                                                                         }
-                                                                                        mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai));
+                                                                                        else{
+                                                                                            mhs.khs.get(Index).khsDetails.add(new KhsDetail(kodeDetailKHS, kodeKHS, mataKuliah.get(IDX), nilai, ""));
+                                                                                        }
+                                                                                        
                                                                                     }
                                                                                     check2 = true;
                                                                                     check3 = true;
@@ -1387,12 +1393,9 @@ public class App {
                     System.out.println("----------------------------------------------------------------");
                     System.out.printf("%-20s %-30s %-4s\n", "Kode MatKul", "Nama MatKul", "Sks");
                     System.out.println("----------------------------------------------------------------");
-                    int jumlahRetake = 0;
-                    for (Khs khs : mahasiswa.get(index).getKHS()) {
-                        jumlahRetake+=khs.retake.size();
-                        for (Retake retake : khs.retake) {
-                            retake.tampilkanMataKuliahRetake();
-                        }
+                    int jumlahRetake = mahasiswa.get(index).getRetake().size();
+                    for (Retake retake : mahasiswa.get(index).getRetake()) {
+                        retake.tampilkanMataKuliahRetake();
                     }
                     if (jumlahRetake == 0) {
                         System.out.println("Tidak ada data yang ditemukan..");
@@ -1500,10 +1503,9 @@ public class App {
                                 String huruf = khsDetail.konversiNilaiHuruf();
                                 int nilai = khsDetail.getNilai();
                                 float angka = khsDetail.getDetailMatakuliah().getSks() *khsDetail.konversiNilai();
-                                // if (cekKodeDetailKhs(khsDetail.getKodeKHSDetail(), studentID, mahasiswa) == 1) {
-                                //     nama = khsDetail.getDetailMatakuliah().getNamaMataKuliah() + " (Retake)";
-                                // }
-                                //System.out.printf("%-8s %-13s %-20s %-6d %-7s %-7d %-7.2f\n", semester, kode, nama, sks, huruf, nilai, angka);
+                                if (khsDetail.getStringRetake().equals("Retake")) {
+                                    nama = khsDetail.getDetailMatakuliah().getNamaMataKuliah() + " (Retake)";
+                                }
                                 System.out.printf("%-8s  %-13s %-25s %-6d %-12s %-12d %-7.2f\n", semester, kode, nama, sks, huruf, nilai, angka);
                             }
                         }

@@ -3,8 +3,8 @@ package khs;
 public class Retake extends KhsDetail {
     private Term retakeTerm;
     
-    public Retake(String kodeKHSDetail, String kodeKHS, Matakuliah mataKuliah, int nilai, Term retakeTerm) {
-        super(kodeKHSDetail, kodeKHS, mataKuliah, nilai);
+    public Retake(String kodeKHSDetail, String kodeKHS, Matakuliah mataKuliah, int nilai, Term retakeTerm, String stringRetake) {
+        super(kodeKHSDetail, kodeKHS, mataKuliah, nilai, stringRetake);
         this.retakeTerm = retakeTerm;
     }
 

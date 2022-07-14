@@ -7,7 +7,6 @@ public class Khs {
     private Mahasiswa mahasiswa;
     private Term term;
     public ArrayList<KhsDetail> khsDetails = new ArrayList<KhsDetail>();
-    public ArrayList<Retake> retake = new ArrayList<Retake>();
 
     public Khs(String kodeKHS, String keterangan, String keteranganSingkat, Mahasiswa mahasiswa, Term term) {
         this.kodeKHS = kodeKHS;
@@ -77,7 +76,11 @@ public class Khs {
         System.out.printf("%-20s %-30s %-5s\n", "Kode Detail Khs", "Nama MatKul","Nilai");
         System.out.println("---------------------------------------------------------------------------");
         for (KhsDetail khsDetail : khsDetails) {
-                khsDetail.tampilkanDetailKHS();  
+            if(khsDetail.getStringRetake().equals("Retake"))
+                khsDetail.tampilkanDetailKHSRetake();
+            else{    
+                khsDetail.tampilkanDetailKHS();
+            }  
         }
         System.out.println("---------------------------------------------------------------------------");
     }
@@ -90,23 +93,23 @@ public class Khs {
         float sumNilai = 0.0f;
         float sumSKS = 0.0f;
         for (KhsDetail i : khsDetails) {
-            float nilaiRetake = 0.0f; 
-            int cek = 0;  
-            if(retake.size()>0){
-                for(Retake r : retake){
-                    if(i.getDetailMatakuliah().getKodeMataKuliah().equals(r.getDetailMatakuliah().getKodeMataKuliah())){
-                        nilaiRetake += r.konversiNilai();
-                        cek++;
-                        break;
-                    }
-                }
-            }
-            if(cek==1){
-                sumNilai+=nilaiRetake*i.getDetailMatakuliah().getSks();
-            }
-            else {
-                sumNilai+=i.konversiNilai()*i.getDetailMatakuliah().getSks();
-            }
+            // float nilaiRetake = 0.0f; 
+            // int cek = 0;  
+            // // if(retake.size()>0){
+            // //     for(Retake r : retake){
+            // //         if(i.getDetailMatakuliah().getKodeMataKuliah().equals(r.getDetailMatakuliah().getKodeMataKuliah())){
+            // //             nilaiRetake += r.konversiNilai();
+            // //             cek++;
+            // //             break;
+            // //         }
+            // //     }
+            // // }
+            // if(cek==1){
+            //     sumNilai+=nilaiRetake*i.getDetailMatakuliah().getSks();
+            // }
+
+            sumNilai+=i.konversiNilai()*i.getDetailMatakuliah().getSks();
+
             sumSKS += i.getDetailMatakuliah().getSks();
         }
         if(sumNilai==0.0f){
